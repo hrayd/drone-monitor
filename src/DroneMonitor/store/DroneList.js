@@ -1,14 +1,25 @@
 import { decorate, observable, action } from 'mobx';
+import moment from 'moment';
 
 class Drone {
-    constructor(name, location, height, state, receiverId, args=[]) {
+    constructor(drone) {
         this.id = Math.random();
-        this.name = name;
-        this.location = location;
-        this.height = height;
-        this.state = state;
-        this.receiverId = receiverId;
-        this.args = args;
+        this.name = drone.name;
+        this.monitorId = drone.monitorId; // 监测站ID
+        this.longitude = drone.longitude; // 经度
+        this.latitude = drone.latitude; // 纬度
+        this.height = drone.height; // 高度
+        this.frequency = drone.frequency; // 频率kHz
+        this.signal = drone.signal; // 信号强度db
+        this.pulseTime = drone.pulseTime; // 脉冲时间
+        this.confidence = drone.confidence; // 置信度
+        this.other = drone.other; // 保留字节
+        this.discoveryTime = drone.discoveryTime || moment(); // 发现时间
+        this.dataType = drone.dataType; // 数据类型
+        this.nameLength = drone.nameLength || drone.name.length; // 名称长度
+        this.angle = drone.angle; // 方向角
+        this.distance = drone.distance; // 距离
+        this.location = [drone.longitude, drone.latitude];
     }
 }
 
@@ -22,27 +33,27 @@ class DroneList {
             const randomN = parseInt(Math.random() * 100, 10);
             const flag = Math.round(Math.random()) ? 1 : -1; // 1 or -1
             const location = [
-                parseFloat((116.347 + flag * (Math.random() / 100)).toFixed(3)),
-                parseFloat((40.035 + flag * (Math.random() / 100)).toFixed(3)),
+                parseFloat((116.347 + 2 * flag * (Math.random() / 100)).toFixed(3)),
+                parseFloat((40.035 + 2 * flag * (Math.random() / 100)).toFixed(3)),
             ];
-            this.list.push(new Drone(
-                `无人机${randomN}`,
-                location,
-                `${randomN}`,
-                1,
-                1,
-                [],
-            ));
+            this.list = [
+                ...this.list,
+                new Drone({
+                    name: `无人机${randomN}`,
+                    longitude: location[0],
+                    latitude: location[1],
+                }),
+            ];
         }
     };
 
-    delete(item) {
+    delete = (item) => {
         if (item.id) {
             this.list = this.list.filter(l => l.id !== item.id);
         }
-    }
+    };
 
-    update(item) {
+    update = (item) => {
         if (item.id) {
             this.list = this.list.map(l => {
                 if (l.id !== item.id) {
@@ -51,10 +62,21 @@ class DroneList {
                 return item;
             })
         }
-    }
+    };
 
-    clear() {
+    clear = () => {
         this.list = [];
+    };
+
+    // 模拟移动
+    move = () => {
+        const flag = Math.round(Math.random()) ? 1 : -1;
+        this.list = this.list.map(l => ({
+            ...l,
+            longitude: parseFloat((l.longitude + flag * (Math.random() / 800)).toFixed(3)),
+            latitude: parseFloat((l.latitude + flag * (Math.random() / 800)).toFixed(3)),
+            location: l.location.map(ll => parseFloat((ll + flag * (Math.random() / 800)).toFixed(3))),
+        }))
     }
 }
 
@@ -66,4 +88,6 @@ decorate(DroneList, {
     clear: action,
 });
 
-export default DroneList;
+const droneList = new DroneList();
+
+export default droneList;

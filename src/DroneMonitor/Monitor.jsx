@@ -25,6 +25,10 @@ const Monitor = ({ center, view, radium }) => {
                 id: 'centerCircle',
                 geometry: circle,
                 symbol: circleSymbol,
+                popupTemplate: {
+                    title: '123',
+                    content: '456',
+                },
             });
 
             const point = {
@@ -44,6 +48,7 @@ const Monitor = ({ center, view, radium }) => {
                 id: 'centerPoint',
                 geometry: point,
                 symbol: pointSymbol,
+                attributes: { Name: 'aa', Owner: 'fff' },
                 popupTemplate: {
                     title: "testTitle",
                     content: [
