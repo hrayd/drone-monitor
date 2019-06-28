@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.ant-drawer-body {
+    padding: 0;
+}
+
 .shadow-container-no-alarm {
     position: absolute;
     left: 0;
@@ -12,13 +16,6 @@
     height: 100%;
     width: 100%;
     pointer-events: none;
-    /*box-sizing: border-box;*/
-    /*border-color: #ff0000;*/
-    /*border-style: solid;*/
-    /*animation-duration: 500ms;*/
-    /*animation-name: map-border;*/
-    /*animation-iteration-count: infinite;*/
-    /*animation-direction: alternate;*/
 }
 
 .shadow-container-alarm {
@@ -57,9 +54,3 @@
     }
 }
 
-/*.info {*/
-/*    display: flex;*/
-/*    position: absolute;*/
-/*    top: 80%;*/
-/*    left: auto;*/
-/*}*/

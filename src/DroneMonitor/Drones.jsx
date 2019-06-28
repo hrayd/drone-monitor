@@ -4,17 +4,17 @@ import { observer, useDisposable } from 'mobx-react-lite';
 import { reaction } from 'mobx';
 import planeWarning from './img/planeWarning.png';
 
-const Drones = observer(({view, drones, center}) => {
+const Drones = observer(({view, drones, center, loaderOptions}) => {
     useDisposable(() =>
         reaction(
-            () => drones.list.map(l => l.location),
-            locations => {
+            () => drones.list,
+            list => {
                 loadModules(['esri/Graphic']).then(([Graphic]) => {
-                    const points = locations.map((c, index) => {
+                    const points = list.map((drone, index) => {
                         const point = {
                             type: "point", // autocasts as new Point()
-                            longitude: c[0],
-                            latitude: c[1],
+                            longitude: drone.longitude,
+                            latitude: drone.latitude,
                         };
 
                         const pointSymbol = {
@@ -28,19 +28,50 @@ const Drones = observer(({view, drones, center}) => {
                             id: `drone${index}`,
                             geometry: point,
                             symbol: pointSymbol,
+                            attributes: drone,
                             popupTemplate: {
-                                title: "testTitle",
-                                content: "content",
+                                title: "无人机信息",
+                                content: [
+                                    {
+                                        type: "fields",
+                                        fieldInfos: [
+                                            {
+                                                label: '厂家型号',
+                                                fieldName: 'name',
+                                            },
+                                            {
+                                                label: '无人机坐标',
+                                                fieldName: 'location',
+                                            },
+                                            {
+                                                label: '载波频率',
+                                                fieldName: 'frequency',
+                                            },
+                                            {
+                                                label: '方向角',
+                                                fieldName: 'angle',
+                                            },
+                                            {
+                                                label: '发现时间',
+                                                fieldName: 'discoveryTime',
+                                            },
+                                            {
+                                                label: '距离(米)',
+                                                fieldName: 'distance',
+                                            },
+                                        ]
+                                    }
+                                ]
                             },
                         });
                     });
 
-                    const lines = locations.map((c, index) => {
+                    const lines = list.map((drone, index) => {
                         const polyline = {
                             type: "polyline",  // autocasts as new Polyline()
                             paths: [
                                 center,
-                                c,
+                                [drone.longitude, drone.latitude],
                             ]
                         };
 
@@ -51,7 +82,6 @@ const Drones = observer(({view, drones, center}) => {
                             style: "short-dot",
                         };
 
-                        // Add the geometry and symbol to a new graphic
                         return new Graphic({
                             id: `line${index}`,
                             geometry: polyline,
@@ -66,78 +96,6 @@ const Drones = observer(({view, drones, center}) => {
         )
     );
     return null;
-    // useEffect(() => {
-    //     loadModules(['esri/Graphic']).then(([Graphic]) => {
-    //         console.log(drones);
-    //         const points = drones.list.map((drone, index) => {
-    //             const c = drone.location;
-    //             const point = {
-    //                 type: "point", // autocasts as new Point()
-    //                 longitude: c[0],
-    //                 latitude: c[1],
-    //             };
-    //
-    //             const pointSymbol = {
-    //                 type: "picture-marker",
-    //                 url: planeWarning,
-    //                 width: '40px',
-    //                 height: '40px',
-    //             };
-    //
-    //             return new Graphic({
-    //                 id: `target${index}`,
-    //                 geometry: point,
-    //                 symbol: pointSymbol,
-    //                 popupTemplate: {
-    //                     title: "testTitle",
-    //                     content: [
-    //                         {
-    //                             type: "fields",
-    //                             fieldInfos: [
-    //                                 {
-    //                                     fieldName: "name"
-    //                                 },
-    //                                 {
-    //                                     fieldName: "address1",
-    //                                     label: "address"
-    //                                 },
-    //                             ]
-    //                         }
-    //                     ]
-    //                 },
-    //             });
-    //         });
-    //
-    //         const lines = drones.list.map(drone => {
-    //             const polyline = {
-    //                 type: "polyline",  // autocasts as new Polyline()
-    //                 paths: [
-    //                     center,
-    //                     drone.location,
-    //                 ]
-    //             };
-    //
-    //             const polylineSymbol = {
-    //                 type: "simple-line",  // autocasts as SimpleLineSymbol()
-    //                 color: [255, 0, 0],
-    //                 width: '2px',
-    //                 style: "short-dot",
-    //             };
-    //
-    //             // Add the geometry and symbol to a new graphic
-    //             return new Graphic({
-    //                 geometry: polyline,
-    //                 symbol: polylineSymbol,
-    //             });
-    //         });
-    //
-    //         view.graphics.addMany([...points, ...lines]);
-    //         setGraphics([...points, ...lines]);
-    //     }).catch((err) => console.error(err));
-    //     return () => {
-    //         view.graphics.removeMany(graphics);
-    //     };
-    // }, [drones.list]);
 });
 
 export default Drones;

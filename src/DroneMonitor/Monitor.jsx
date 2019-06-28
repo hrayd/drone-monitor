@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { loadModules } from '@esri/react-arcgis';
 import station from './img/station.png';
 
-const Monitor = ({ center, view, radium }) => {
+const Monitor = ({ center, view, radium, monitor, loaderOptions }) => {
     const [graphics, setGraphics] = useState([]);
 
     useEffect(() => {
@@ -25,10 +25,6 @@ const Monitor = ({ center, view, radium }) => {
                 id: 'centerCircle',
                 geometry: circle,
                 symbol: circleSymbol,
-                popupTemplate: {
-                    title: '123',
-                    content: '456',
-                },
             });
 
             const point = {
@@ -48,20 +44,41 @@ const Monitor = ({ center, view, radium }) => {
                 id: 'centerPoint',
                 geometry: point,
                 symbol: pointSymbol,
-                attributes: { Name: 'aa', Owner: 'fff' },
+                attributes: monitor,
                 popupTemplate: {
-                    title: "testTitle",
+                    title: "监测站信息",
                     content: [
                         {
                             type: "fields",
                             fieldInfos: [
                                 {
-                                    fieldName: "name"
+                                    label: '监测设备ID',
+                                    fieldName: 'id',
                                 },
                                 {
-                                    fieldName: "address1",
-                                    label: "address"
+                                    label: '设备名称',
+                                    fieldName: 'name',
                                 },
+                                {
+                                    label: '经度',
+                                    fieldName: 'longitude',
+                                },
+                                {
+                                    label: '纬度',
+                                    fieldName: 'latitude',
+                                },
+                                {
+                                    label: '工作状态',
+                                    fieldName: 'workState',
+                                },
+                                {
+                                    label: '运行状态',
+                                    fieldName: 'runState',
+                                },
+                                {
+                                    label: '覆盖范围',
+                                    fieldName: 'coverRange',
+                                }
                             ]
                         }
                     ]

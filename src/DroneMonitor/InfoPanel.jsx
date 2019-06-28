@@ -1,32 +1,21 @@
-import React, { useState } from 'react';
-import { Button, Drawer, Input, Row, Col, Form, Table, Icon } from 'antd';
+import React from 'react';
+import { Button, Drawer, Row, Col, Form, Table, Icon, Collapse } from 'antd';
 import { observer } from 'mobx-react';
 
-const FormItem = Form.Item;
-const formItemLayout = {
-    labelCol: { span: 10 },
-    wrapperCol: { span: 14 },
-};
+const Panel = Collapse.Panel;
 
-// const btnGroupStyle = {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     justifyContent: 'space-around',
-// };
 const btnStyle = {
-    marginLeft: '1rem',
+    margin: '0 auto',
     marginTop: '1rem',
     display: 'block',
 };
 
 const InfoPanel = observer((
     {
-        center,
-        maxRadium,
-        setMaxRadium,
         drones,
         visible,
-        setVisible
+        setVisible,
+        monitor,
     }) => {
     const title = (
         <div>
@@ -41,26 +30,26 @@ const InfoPanel = observer((
             key: 'index',
             dataIndex: 'index',
             render: (text, record, index) => (index + 1),
-            width: '8%',
+            width: '5%',
         },
         {
             title: '厂家型号',
             key: 'name',
             dataIndex: 'name',
-            width: '15%',
+            width: '12%',
         },
         {
             title: '无人机坐标',
             key: 'location',
             dataIndex: 'location',
-            width: '20%',
+            width: '16%',
             render: text => `${text[0]}, ${text[1]}`,
         },
         {
             title: '载波频率(GHz)',
             key: 'frequency',
             dataIndex: 'frequency',
-            width: '15%',
+            width: '12%',
         },
         {
             title: '方向角',
@@ -72,14 +61,24 @@ const InfoPanel = observer((
             title: '发现时间',
             key: 'discoveryTime',
             dataIndex: 'discoveryTime',
-            width: '15%',
+            width: '20%',
         },
         {
             title: '距离(米)',
             key: 'distance',
             dataIndex: 'distance',
-            width: '17%',
+            width: '10%',
         },
+        {
+            title: '操作',
+            key: 'operations',
+            render: () => (<span>
+                <Button icon="alert" style={{ marginRight: '.2rem' }} />
+                <Button icon="rise" style={{ marginRight: '.2rem' }} />
+                <Button icon="like" style={{ marginRight: '.2rem' }} />
+                <Button icon="delete" style={{ marginRight: '.2rem' }} />
+            </span>),
+        }
     ];
 
     const autoMove = () => {
@@ -89,58 +88,196 @@ const InfoPanel = observer((
         setTimeout(() => clearInterval(t3), 10000);
     };
 
-    if (visible) {
-        return (
-            <Drawer
-                title={title}
-                placement="bottom"
-                closable={false}
-                onClose={() => setVisible(false)}
-                visible={visible}
-                mask={false}
-                height={400}
-            >
-                <Form>
-                    <Row>
-                        {/*<Col span={12}>*/}
-                        {/*    <FormItem label="中心位置" {...formItemLayout}>*/}
-                        {/*        {center[0]}, {center[1]}*/}
-                        {/*    </FormItem>*/}
-                        {/*</Col>*/}
-                        {/*<Col span={12}>*/}
-                        {/*    <FormItem label="监测半径" {...formItemLayout}>*/}
-                        {/*        <Input type="number" value={maxRadium} onChange={e => setMaxRadium(parseInt(e.target.value, 10))}/>*/}
-                        {/*    </FormItem>*/}
-                        {/*</Col>*/}
-                        <Col span={2}>
-                            <Button style={btnStyle} onClick={autoMove} type="primary">自动模拟</Button>
-                            <Button style={btnStyle} onClick={drones.add} type="primary">模拟添加</Button>
-                            <Button style={btnStyle} onClick={drones.move} type="primary">模拟移动</Button>
-                            <Button style={btnStyle} onClick={drones.clear} type="primary">清除模拟</Button>
-                        </Col>
-                        <Col span={10}>
-                            <Table
-                                rowKey="id"
-                                columns={columns}
-                                dataSource={drones.list}
-                                pagination={false}
-                                scroll={{ y: 240 }}
-                                size="small"
-                                bordered
-                                title={() => <div style={{ textAlign: 'center' }}>无人机列表</div>}
-                            />
-                        </Col>
-                    </Row>
-                </Form>
-            </Drawer>
-        );
-    }
     return (
-        <div style={{ height: '2rem', width: '2rem', float: 'right', marginRight: '1rem', fontSize: '1.5rem' }}>
-            <Button type="primary" onClick={() => console.log('2')} >
-                <Icon type="double-left"/>
-            </Button>
-        </div>
+        <Drawer
+            title={title}
+            placement="bottom"
+            onClose={() => setVisible(false)}
+            visible={visible}
+            height={500}
+        >
+            <Form>
+                <Row>
+                    <Col span={4}>
+                        <Button style={btnStyle} onClick={autoMove} type="primary">自动模拟</Button>
+                        <Button style={btnStyle} onClick={drones.add} type="primary">模拟添加</Button>
+                        <Button style={btnStyle} onClick={drones.move} type="primary">模拟移动</Button>
+                        <Button style={btnStyle} onClick={drones.clear} type="primary">清除模拟</Button>
+                    </Col>
+                    <Col span={20}>
+                        <Collapse bordered={false} defaultActiveKey={['0']}>
+                            <Panel header="无人机列表" key="0">
+                                <Table
+                                    rowKey="id"
+                                    columns={columns}
+                                    dataSource={drones.list}
+                                    pagination={false}
+                                    scroll={{ y: 150 }}
+                                    size="small"
+                                />
+                            </Panel>
+                            <Panel header="监测站列表" key="1">
+                                <Table
+                                    rowKey="id"
+                                    columns={[
+                                        {
+                                            title: '监测设备ID',
+                                            dataIndex: 'id',
+                                            width: '16%',
+                                        },
+                                        {
+                                            title: '设备名称',
+                                            dataIndex: 'name',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '经度',
+                                            dataIndex: 'longitude',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '纬度',
+                                            dataIndex: 'latitude',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '工作状态',
+                                            dataIndex: 'workState',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '运行状态',
+                                            dataIndex: 'runState',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '覆盖范围',
+                                            dataIndex: 'coverRange',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '操作',
+                                            key: 'operations',
+                                            render: () => (<span>
+                                                <Button icon="alert" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="rise" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="like" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="delete" style={{ marginRight: '.2rem' }} />
+                                            </span>),
+                                        }
+                                    ]}
+                                    dataSource={[monitor]}
+                                    pagination={false}
+                                    scroll={{ y: 150 }}
+                                    size="small"
+                                    bordered
+                                />
+                            </Panel>
+                            <Panel header="操控者列表" key="2">
+                                <Table
+                                    rowKey="id"
+                                    columns={[
+                                        {
+                                            title: '型号',
+                                            dataIndex: 'modal',
+                                            width: '16%',
+                                        },
+                                        {
+                                            title: '角度',
+                                            dataIndex: 'angle',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '站ID',
+                                            dataIndex: 'stationId',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '经度',
+                                            dataIndex: 'longitude',
+                                            width: '10%'
+                                        },
+                                        {
+                                            title: '纬度',
+                                            dataIndex: 'latitude',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '载波频率',
+                                            dataIndex: 'frequency',
+                                            width: '10%',
+                                        },
+                                        {
+                                            title: '操作',
+                                            key: 'operations',
+                                            render: () => (<span>
+                                                <Button icon="alert" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="rise" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="like" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="delete" style={{ marginRight: '.2rem' }} />
+                                            </span>),
+                                        },
+                                    ]}
+                                    dataSource={[]}
+                                    pagination={false}
+                                    scroll={{ y: 120 }}
+                                    size="small"
+                                    bordered
+                                />
+                            </Panel>
+                            <Panel header="白名单" key="3">
+                                <Table
+                                    rowKey="id"
+                                    columns={columns}
+                                    dataSource={[]}
+                                    pagination={false}
+                                    scroll={{ y: 80 }}
+                                    size="small"
+                                    bordered
+                                />
+                            </Panel>
+                            <Panel header="历史活动" key="4">
+                                <Table
+                                    rowKey="id"
+                                    columns={[
+                                        {
+                                            title: '活动名称',
+                                            dataIndex: 'name',
+                                            width: '25%',
+                                        },
+                                        {
+                                            title: '开始时间',
+                                            dataIndex: 'startTime',
+                                            width: '25%',
+                                        },
+                                        {
+                                            title: '结束时间',
+                                            dataIndex: 'endTime',
+                                            width: '25%',
+                                        },
+                                        {
+                                            title: '操作',
+                                            key: 'operations',
+                                            render: () => (<span>
+                                                <Button icon="file-text" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="rise" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="like" style={{ marginRight: '.2rem' }} />
+                                                <Button icon="delete" style={{ marginRight: '.2rem' }} />
+                                            </span>),
+                                        }
+                                    ]}
+                                    dataSource={[]}
+                                    pagination={false}
+                                    scroll={{ y: 80 }}
+                                    size="small"
+                                    bordered
+                                />
+                            </Panel>
+                        </Collapse>
+                    </Col>
+                </Row>
+            </Form>
+        </Drawer>
     );
 });
 
