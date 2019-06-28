@@ -38,19 +38,20 @@ const DroneMonitorContainer = observer(() => {
     }, [radium]);
 
     useEffect(() => {
-        loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/TileLayer'], options).then(([Basemap, WebTileLayer, WMTSLayer, TileLayer]) => {
+        loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/TileLayer', 'esri/layers/OpenStreetMapLayer'], options).then(([Basemap, WebTileLayer, WMTSLayer, TileLayer, OpenStreetMapLayer]) => {
             const basemap = new Basemap({
                 baseLayers: [
-                    new WebTileLayer({
-                        urlTemplate: 'https://a.tile.openstreetmap.org/{level}/{col}/{row}.png',
-                        // urlTemplate: 'http://localhost:9009/arctiler/osgeo/services/Beijing/TMS/{level}/{col}/{row}.png',
-                    })
+                    // new WebTileLayer({
+                    //     urlTemplate: 'https://a.tile.openstreetmap.org/{level}/{col}/{row}.png',
+                    //     // urlTemplate: 'http://localhost:8080/geowebcache/service/tms/1.0.0/v101@EPSG%3A3857_v101@jpeg/{level}/{col}/{row}.png',
+                    // })
                     // new WMTSLayer({
-                    //     url: 'http://localhost:9009/arctiler/ogc/services/Beijing/WMTS',
+                    //     url: 'http://localhost:8080/geowebcache/service/wmts',
                     // })
                 //     new TileLayer({
                 //         url: "http://localhost:9009/arctiler/arcgis/services/ArcGISCache/MapServer"
                 //     })
+                    new OpenStreetMapLayer()
                 ],
             });
             setBasemap(basemap);
