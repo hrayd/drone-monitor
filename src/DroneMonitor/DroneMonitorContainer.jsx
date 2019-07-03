@@ -14,13 +14,14 @@ import monitors from './store/MonitorStore';
 import './style/DroneMonitor.css';
 
 loadCss('http://localhost:8080/arcgis/library/4.10/esri/css/main.css');
+// loadCss('https://js.arcgis.com/3.28/esri/css/esri.css');
 
 const DroneMonitorContainer = observer(() => {
     const [basemap, setBasemap] = useState(null);
     // const [center, setCenter] = useState([116.347, 40.035]);
     const [radium, setRadium] = useState(0);
     const [maxRadium, setMaxRadium] = useState(3000);
-    const [panelVisible, setPanelVisible] = useState(true);
+    const [panelVisible, setPanelVisible] = useState(false);
 
     const options = {
         url: 'http://localhost:8080/arcgis/library/4.10/dojo/dojo.js',
@@ -38,20 +39,28 @@ const DroneMonitorContainer = observer(() => {
     }, [radium]);
 
     useEffect(() => {
-        loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/TileLayer', 'esri/layers/OpenStreetMapLayer'], options).then(([Basemap, WebTileLayer, WMTSLayer, TileLayer, OpenStreetMapLayer]) => {
+        loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/support/TileInfo'], options).then(([Basemap, WebTileLayer, WMTSLayer, TileInfo]) => {
             const basemap = new Basemap({
                 baseLayers: [
-                    // new WebTileLayer({
-                    //     urlTemplate: 'https://a.tile.openstreetmap.org/{level}/{col}/{row}.png',
-                    //     // urlTemplate: 'http://localhost:8080/geowebcache/service/tms/1.0.0/v101@EPSG%3A3857_v101@jpeg/{level}/{col}/{row}.png',
-                    // })
+                    new WebTileLayer({
+                        urlTemplate: 'http://localhost:8080/map/{level}/{col}/{row}.png',
+                    })
                     // new WMTSLayer({
-                    //     url: 'http://localhost:8080/geowebcache/service/wmts',
+                    //     url: 'http://localhost:9009/arctiler/ogc/services/cu/WMTS',
                     // })
-                //     new TileLayer({
-                //         url: "http://localhost:9009/arctiler/arcgis/services/ArcGISCache/MapServer"
-                //     })
-                    new OpenStreetMapLayer()
+                    // new TileLayer({
+                    //     url: "http://localhost:9009/arctiler/arcgis/services/ArcGISCache/MapServer"
+                    // })
+                    // new WMSLayer({
+                    //     url: 'http://localhost:8080/geowebcache/service/wms',
+                    //     imageFormat: 'image/png',
+                    //     sublayers: [
+                    //         {
+                    //           name: "ARCGIS-Demo"
+                    //         }
+                    //     ],
+                    // })
+                    // new OpenStreetMapLayer()
                 ],
             });
             setBasemap(basemap);
