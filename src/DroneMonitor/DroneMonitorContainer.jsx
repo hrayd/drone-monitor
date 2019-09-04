@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, loadModules } from "@esri/react-arcgis";
+import { Map } from "@esri/react-arcgis";
 import { loadCss } from 'esri-loader';
 import { observer } from "mobx-react";
 import { Button, Icon } from 'antd';
@@ -13,8 +13,9 @@ import monitors from './store/MonitorStore';
 
 import './style/DroneMonitor.css';
 
-loadCss('http://localhost:8080/arcgis/library/4.10/esri/css/main.css');
-// loadCss('https://js.arcgis.com/3.28/esri/css/esri.css');
+import { cssUrl, OPTIONS, loadBasemap } from "../config";
+
+loadCss(cssUrl);
 
 const DroneMonitorContainer = observer(() => {
     const [basemap, setBasemap] = useState(null);
@@ -22,10 +23,6 @@ const DroneMonitorContainer = observer(() => {
     const [radium, setRadium] = useState(0);
     const [maxRadium, setMaxRadium] = useState(3000);
     const [panelVisible, setPanelVisible] = useState(false);
-
-    const options = {
-        url: 'http://localhost:8080/arcgis/library/4.10/dojo/dojo.js',
-    };
 
     // 暂时只有一个监测站
     const monitor = monitors.list[0];
@@ -39,32 +36,7 @@ const DroneMonitorContainer = observer(() => {
     }, [radium]);
 
     useEffect(() => {
-        loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/support/TileInfo'], options).then(([Basemap, WebTileLayer, WMTSLayer, TileInfo]) => {
-            const basemap = new Basemap({
-                baseLayers: [
-                    new WebTileLayer({
-                        urlTemplate: 'http://localhost:8080/map/{level}/{col}/{row}.png',
-                    })
-                    // new WMTSLayer({
-                    //     url: 'http://localhost:9009/arctiler/ogc/services/cu/WMTS',
-                    // })
-                    // new TileLayer({
-                    //     url: "http://localhost:9009/arctiler/arcgis/services/ArcGISCache/MapServer"
-                    // })
-                    // new WMSLayer({
-                    //     url: 'http://localhost:8080/geowebcache/service/wms',
-                    //     imageFormat: 'image/png',
-                    //     sublayers: [
-                    //         {
-                    //           name: "ARCGIS-Demo"
-                    //         }
-                    //     ],
-                    // })
-                    // new OpenStreetMapLayer()
-                ],
-            });
-            setBasemap(basemap);
-        })
+      loadBasemap((bm) => setBasemap(bm))
     }, []);
 
     return (
@@ -99,10 +71,9 @@ const DroneMonitorContainer = observer(() => {
                                     center: monitor.location,
                                     zoom: 14,
                                 }}
-                                // loaderOptions={options}
                             >
-                                <Monitor center={monitor.location} radium={radium} monitor={monitor} loaderOptions={options} />
-                                <Drones drones={drones} center={monitor.location} loaderOptions={options} />
+                                <Monitor center={monitor.location} radium={radium} monitor={monitor} loaderOptions={OPTIONS} />
+                                <Drones drones={drones} center={monitor.location} loaderOptions={OPTIONS} />
                             </Map>
                         )
                         : null
