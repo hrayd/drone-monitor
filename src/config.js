@@ -4,12 +4,14 @@ import { loadModules } from "@esri/react-arcgis";
  * ONLINE: 使用arcgis在线api服务
  * LOCAL: 使用本地搭建的arcgis api服务
  */
-export const NET_MODE = 'ONLINE'; // 'ONLINE' or 'LOCAL'
+export const NET_MODE = 'LOCAL'; // 'ONLINE' or 'LOCAL'
 
 // 本地arcgis api服务配置
 const HOST = '127.0.0.1';
 const PORT = '8080';
-const ESRI_PATH = '/arcgis/library/4.10';
+const ESRI_PATH = '/arcgis_js_api/library/4.12';
+
+export const WEBSOCKET_URL = 'ws:/localhost:5050/broadcast';
 
 export const cssUrl = (
   NET_MODE === 'ONLINE'
@@ -19,34 +21,25 @@ export const cssUrl = (
 
 export const OPTIONS = (
   NET_MODE === 'ONLINE'
-    ? {}
-    : { url: `http://${HOST}:${PORT}${ESRI_PATH}/dojo/dojo.js` }
+    ? ({})
+    : ({ url: `http://${HOST}:${PORT}${ESRI_PATH}/dojo/dojo.js` })
 );
+export const getOptions = () => {
+  if (NET_MODE === 'ONLINE') {
+    return {};
+  }
+  return { url: `http://${HOST}:${PORT}${ESRI_PATH}/dojo/dojo.js` };
+};
 
 // 加载 basemap
 export const loadBasemap = (callback) => {
-  loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/OpenStreetMapLayer', 'esri/layers/support/TileInfo'], OPTIONS).then(([Basemap, WebTileLayer, WMTSLayer, OpenStreetMapLayer, TileInfo]) => {
+  console.log(getOptions());
+  loadModules(['esri/Basemap', 'esri/layers/WebTileLayer', 'esri/layers/WMTSLayer', 'esri/layers/OpenStreetMapLayer', 'esri/layers/support/TileInfo'], getOptions()).then(([Basemap, WebTileLayer, WMTSLayer, OpenStreetMapLayer, TileInfo]) => {
     const basemap = new Basemap({
       baseLayers: [
-        // new WebTileLayer({
-        //     urlTemplate: 'http://localhost:8080/map/{level}/{col}/{row}.png',
-        // })
-        // new WMTSLayer({
-        //     url: 'http://localhost:9009/arctiler/ogc/services/cu/WMTS',
-        // })
-        // new TileLayer({
-        //     url: "http://localhost:9009/arctiler/arcgis/services/ArcGISCache/MapServer"
-        // })
-        // new WMSLayer({
-        //     url: 'http://localhost:8080/geowebcache/service/wms',
-        //     imageFormat: 'image/png',
-        //     sublayers: [
-        //         {
-        //           name: "ARCGIS-Demo"
-        //         }
-        //     ],
-        // })
-        new OpenStreetMapLayer()
+        new WebTileLayer({
+            urlTemplate: 'http://localhost:5000/tms/1.0.0/world-fs/{level}/{col}/{row}.png',
+        })
       ],
     });
     if (typeof callback === 'function') {
