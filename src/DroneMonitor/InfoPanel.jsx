@@ -16,6 +16,7 @@ const InfoPanel = observer((
         visible,
         setVisible,
         monitor,
+        sendMsg,
     }) => {
     const title = (
         <div>
@@ -103,6 +104,7 @@ const InfoPanel = observer((
                         <Button style={btnStyle} onClick={drones.add} type="primary">模拟添加</Button>
                         <Button style={btnStyle} onClick={drones.move} type="primary">模拟移动</Button>
                         <Button style={btnStyle} onClick={drones.clear} type="primary">清除模拟</Button>
+                        <Button style={btnStyle} onClick={sendMsg} type="primary">发送</Button>
                     </Col>
                     <Col span={20}>
                         <Collapse bordered={false} defaultActiveKey={['0']}>

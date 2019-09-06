@@ -13,9 +13,11 @@ import monitors from './store/MonitorStore';
 
 import './style/DroneMonitor.css';
 
-import { cssUrl, OPTIONS, loadBasemap } from "../config";
+import { cssUrl, OPTIONS, loadBasemap, WEBSOCKET_URL } from "../config";
 
 loadCss(cssUrl);
+
+let ws;
 
 const DroneMonitorContainer = observer(() => {
     const [basemap, setBasemap] = useState(null);
@@ -37,7 +39,30 @@ const DroneMonitorContainer = observer(() => {
 
     useEffect(() => {
       loadBasemap((bm) => setBasemap(bm))
+
+      ws = new WebSocket(WEBSOCKET_URL);
+      ws.onmessage = (e) => {
+        console.log('Receive: ', e.data);
+      };
+      ws.onclose = () => {
+        console.log('Websocket Closed');
+      };
+      ws.onerror = () => {
+        console.log('Websocket Error');
+      };
+      ws.onopen = () => {
+        console.log('Websocket Opened');
+      };
     }, []);
+
+    const sendMsg = () => {
+      const obj = {
+        id: 'fda',
+        name: 'fdadfdsaf',
+      };
+      console.log('SEND: ', JSON.stringify(obj));
+      ws.send(JSON.stringify(obj));
+    };
 
     return (
         <div className="container">
@@ -69,7 +94,7 @@ const DroneMonitorContainer = observer(() => {
                                 mapProperties={{ basemap }}
                                 viewProperties={{
                                     center: monitor.location,
-                                    zoom: 14,
+                                    zoom: 12,
                                 }}
                             >
                                 <Monitor center={monitor.location} radium={radium} monitor={monitor} loaderOptions={OPTIONS} />
@@ -88,6 +113,7 @@ const DroneMonitorContainer = observer(() => {
                 drones={drones}
                 visible={panelVisible}
                 setVisible={setPanelVisible}
+                sendMsg={sendMsg}
             />
         </div>
     );
