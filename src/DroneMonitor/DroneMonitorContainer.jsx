@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Map, loadModules } from "@esri/react-arcgis";
 import { loadCss } from 'esri-loader';
 import { observer } from "mobx-react";
-import { Button, Icon } from 'antd';
+import { Button, Icon, message } from 'antd';
 
 import Monitor from './Monitor';
 import Drones from './Drones';
@@ -17,13 +17,14 @@ import {cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions} from "../config";
 
 loadCss(cssUrl);
 
-let ws;
-
 const DroneMonitorContainer = observer(() => {
     const [basemap, setBasemap] = useState(null);
     const [radium, setRadium] = useState(0);
     const [maxRadium, setMaxRadium] = useState(3000);
     const [panelVisible, setPanelVisible] = useState(false);
+
+    const [socketIsConnected, setSocketStatus] = useState(false);
+    const ws = useRef();
 
     // 暂时只有一个监测站
     const monitor = monitors.list[0];
@@ -46,6 +47,39 @@ const DroneMonitorContainer = observer(() => {
       })
     };
 
+    const openSocket = () => {
+      if (ws.current) {
+        return;
+      }
+      ws.current = new WebSocket(WEBSOCKET_URL);
+      ws.current.onmessage = (e) => {
+        console.log('Receive: ', e.data);
+      };
+      ws.current.onclose = () => {
+        console.log('Websocket Closed');
+        ws.current = null;
+        setSocketStatus(false);
+      };
+      ws.current.onerror = () => {
+        console.log('Websocket Error');
+        ws.current = null;
+        setSocketStatus(false);
+      };
+      ws.current.onopen = () => {
+        console.log('Websocket Opened');
+        message.success('连接成功');
+        setSocketStatus(true);
+      };
+    };
+
+    const closeSocket = () => {
+      if (ws.current && ws.current.close) {
+        ws.current.close();
+        setSocketStatus(false);
+        ws.current = null;
+      }
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             const newRadium = radium < maxRadium ? (radium + 300) : 0;
@@ -56,20 +90,7 @@ const DroneMonitorContainer = observer(() => {
 
     useEffect(() => {
       loadBasemap((bm) => setBasemap(bm));
-
-      ws = new WebSocket(WEBSOCKET_URL);
-      ws.onmessage = (e) => {
-        console.log('Receive: ', e.data);
-      };
-      ws.onclose = () => {
-        console.log('Websocket Closed');
-      };
-      ws.onerror = () => {
-        console.log('Websocket Error');
-      };
-      ws.onopen = () => {
-        console.log('Websocket Opened');
-      };
+      return closeSocket;
     }, []);
 
     const sendMsg = () => {
@@ -78,7 +99,7 @@ const DroneMonitorContainer = observer(() => {
         name: 'fdadfdsaf',
       };
       console.log('SEND: ', JSON.stringify(obj));
-      ws.send(JSON.stringify(obj));
+      ws.current.send(JSON.stringify(obj));
     };
 
     return (
@@ -131,6 +152,8 @@ const DroneMonitorContainer = observer(() => {
                 visible={panelVisible}
                 setVisible={setPanelVisible}
                 sendMsg={sendMsg}
+                isConnected={socketIsConnected}
+                connect={openSocket}
             />
         </div>
     );
