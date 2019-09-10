@@ -112,6 +112,7 @@ const DroneMonitorContainer = observer(() => {
 
     useEffect(() => {
       loadBasemap((bm) => setBasemap(bm));
+      openSocket();
       return closeSocket;
     }, []);
 
@@ -158,7 +159,7 @@ const DroneMonitorContainer = observer(() => {
                                 }}
                             >
                                 <Monitor center={monitor.location} radium={radium} monitor={monitor} loaderOptions={OPTIONS} />
-                                <Drones drones={drones} center={monitor.location} loaderOptions={OPTIONS} />
+                                <Drones drones={drones} center={monitor.location} radium={radium} loaderOptions={OPTIONS} />
                             </Map>
                         )
                         : null
