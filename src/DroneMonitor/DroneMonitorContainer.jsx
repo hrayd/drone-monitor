@@ -54,6 +54,28 @@ const DroneMonitorContainer = observer(() => {
       ws.current = new WebSocket(WEBSOCKET_URL);
       ws.current.onmessage = (e) => {
         console.log('Receive: ', e.data);
+        switch(e.data) {
+          case "up":
+            drones.moveUp();
+            break;
+          case "down":
+            drones.moveDown();
+            break;
+          case "left":
+            drones.moveLeft();
+            break;
+          case "right":
+            drones.moveRight();
+            break;
+          case "add":
+            drones.add();
+            break;
+          case "clear":
+            drones.clear();
+            break;
+          default:
+            break;
+        }
       };
       ws.current.onclose = () => {
         console.log('Websocket Closed');
@@ -132,7 +154,7 @@ const DroneMonitorContainer = observer(() => {
                                 mapProperties={{ basemap }}
                                 viewProperties={{
                                     center: monitor.location,
-                                    zoom: 12,
+                                    zoom: 14,
                                 }}
                             >
                                 <Monitor center={monitor.location} radium={radium} monitor={monitor} loaderOptions={OPTIONS} />

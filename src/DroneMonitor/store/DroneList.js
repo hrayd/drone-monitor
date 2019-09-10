@@ -83,7 +83,41 @@ class DroneList {
                 location: [longitude, latitude],
             }
         })
-    }
+    };
+
+    moveRight = () => {
+        this.list = this.list.map(l => ({
+            ...l,
+            longitude: l.longitude + 0.002,
+            // latitude,
+            location: [l.longitude + 0.002, l.latitude],
+        }));
+    };
+
+    moveLeft = () => {
+        this.list = this.list.map(l => ({
+            ...l,
+            longitude: l.longitude - 0.002,
+            // latitude,
+            location: [l.longitude - 0.002, l.latitude],
+        }));
+    };
+
+    moveUp = () => {
+        this.list = this.list.map(l => ({
+            ...l,
+            latitude: l.latitude + 0.002,
+            location: [l.longitude, l.latitude + 0.002],
+        }));
+    };
+
+    moveDown = () => {
+        this.list = this.list.map(l => ({
+            ...l,
+            latitude: l.latitude - 0.002,
+            location: [l.longitude, l.latitude - 0.002],
+        }));
+    };
 }
 
 decorate(DroneList, {
