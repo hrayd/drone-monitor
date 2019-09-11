@@ -102,6 +102,45 @@ const DroneMonitorContainer = observer(() => {
       }
     };
 
+    const addKeyboardListener = () => {
+      document.addEventListener('keyup', (event) => {
+        const keyName = event.key;
+        switch(keyName) {
+          case 'i': {
+            console.log("上");
+            drones.moveUp();
+            break;
+          }
+          case 'k': {
+            console.log("下");
+            drones.moveDown();
+            break;
+          }
+          case 'j': {
+            console.log("左");
+            drones.moveLeft();
+            break;
+          }
+          case 'l': {
+            console.log("右");
+            drones.moveRight();
+            break;
+          }
+          case ',': {
+            console.log(",");
+            drones.clear();
+            break;
+          }
+          case '.': {
+            console.log(".");
+            drones.add();
+            break;
+          }
+          default: break;
+        }
+      }, false);
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             const newRadium = radium < maxRadium ? (radium + 300) : 0;
@@ -113,17 +152,9 @@ const DroneMonitorContainer = observer(() => {
     useEffect(() => {
       loadBasemap((bm) => setBasemap(bm));
       openSocket();
+      addKeyboardListener();
       return closeSocket;
     }, []);
-
-    const sendMsg = () => {
-      const obj = {
-        id: 'fda',
-        name: 'fdadfdsaf',
-      };
-      console.log('SEND: ', JSON.stringify(obj));
-      ws.current.send(JSON.stringify(obj));
-    };
 
     return (
         <div className="container">
@@ -174,7 +205,6 @@ const DroneMonitorContainer = observer(() => {
                 drones={drones}
                 visible={panelVisible}
                 setVisible={setPanelVisible}
-                sendMsg={sendMsg}
                 isConnected={socketIsConnected}
                 connect={openSocket}
             />

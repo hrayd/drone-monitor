@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Drawer, Row, Col, Form, Table, Icon, Collapse } from 'antd';
+import { Button, Drawer, Row, Form, Table, Icon, Collapse, Tooltip } from 'antd';
 import { observer } from 'mobx-react';
 
 const Panel = Collapse.Panel;
@@ -16,7 +16,6 @@ const InfoPanel = observer((
         visible,
         setVisible,
         monitor,
-        sendMsg,
         isConnected,
         connect,
     }) => {
@@ -27,6 +26,9 @@ const InfoPanel = observer((
             <Button disabled={isConnected} onClick={connect} type="primary" style={{ marginLeft: '1rem' }}>
               {isConnected ? '已连接' : '连接'}
             </Button>
+            <Tooltip title="无人机模拟：句号新增无人机，逗号清空无人机；i、j、k、l分别控制上左下右。">
+              <Icon type="question-circle" style={{ float: 'right', marginRight: '2rem', fontSize: '1.5rem' }} />
+            </Tooltip>
         </div>
     );
 
