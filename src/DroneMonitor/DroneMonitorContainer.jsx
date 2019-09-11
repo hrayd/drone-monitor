@@ -151,7 +151,7 @@ const DroneMonitorContainer = observer(() => {
 
     useEffect(() => {
       loadBasemap((bm) => setBasemap(bm));
-      openSocket();
+      // openSocket();
       addKeyboardListener();
       return closeSocket;
     }, []);
