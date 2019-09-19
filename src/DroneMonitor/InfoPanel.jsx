@@ -103,7 +103,7 @@ const InfoPanel = observer((
             placement="bottom"
             onClose={() => setVisible(false)}
             visible={visible}
-            height={500}
+            height={350}
         >
           <Tabs defaultActiveKey="1">
             <TabPane tab="无人机列表" key="1">
@@ -112,7 +112,7 @@ const InfoPanel = observer((
                 columns={columns}
                 dataSource={drones.list}
                 pagination={false}
-                scroll={{ y: 150 }}
+                scroll={{ y: 180 }}
                 size="small"
               />
             </TabPane>
@@ -168,7 +168,7 @@ const InfoPanel = observer((
                 ]}
                 dataSource={[monitor]}
                 pagination={false}
-                scroll={{ y: 150 }}
+                scroll={{ y: 180 }}
                 size="small"
                 bordered
               />
@@ -220,7 +220,7 @@ const InfoPanel = observer((
                 ]}
                 dataSource={[]}
                 pagination={false}
-                scroll={{ y: 120 }}
+                scroll={{ y: 180 }}
                 size="small"
                 bordered
               />
@@ -231,7 +231,7 @@ const InfoPanel = observer((
                 columns={columns}
                 dataSource={[]}
                 pagination={false}
-                scroll={{ y: 80 }}
+                scroll={{ y: 180 }}
                 size="small"
                 bordered
               />
@@ -268,7 +268,7 @@ const InfoPanel = observer((
                 ]}
                 dataSource={[]}
                 pagination={false}
-                scroll={{ y: 80 }}
+                scroll={{ y: 180 }}
                 size="small"
                 bordered
               />
