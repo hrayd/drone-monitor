@@ -16,7 +16,7 @@ const NET_MODE = 'LOCAL'; // 'ONLINE' or 'LOCAL'
 
 export const cssUrl = (
   NET_MODE === 'ONLINE'
-    ? 'https://js.arcgis.com/3.28/esri/css/esri.css'
+    ? 'https://js.arcgis.com/4.12/esri/themes/light/main.css'
     : `http://${DEFAULT_HOST}:${ESRI_PORT}${ESRI_PATH}/esri/css/main.css`
 );
 
