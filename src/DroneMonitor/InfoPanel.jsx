@@ -105,15 +105,16 @@ const InfoPanel = observer((
             visible={visible}
             height={350}
         >
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" tabPosition="left">
             <TabPane tab="无人机列表" key="1">
               <Table
                 rowKey="id"
                 columns={columns}
                 dataSource={drones.list}
                 pagination={false}
-                scroll={{ y: 180 }}
+                scroll={{ y: 200 }}
                 size="small"
+                bordered
               />
             </TabPane>
             <TabPane tab="监测站列表" key="2">
