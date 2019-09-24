@@ -29,6 +29,7 @@ class DroneList {
     list = [];
 
     add = (item = {}) => {
+        console.log('ADD');
         if (item.name) {
             this.list.push(item);
         } else {

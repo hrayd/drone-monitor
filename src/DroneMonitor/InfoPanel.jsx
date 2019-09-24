@@ -48,11 +48,14 @@ const InfoPanel = observer((
             width: '12%',
         },
         {
-            title: '无人机坐标',
-            key: 'location',
-            dataIndex: 'location',
-            width: '16%',
-            render: text => `${text[0]}, ${text[1]}`,
+          title: '经度',
+          dataIndex: 'longitude',
+          width: '8%',
+        },
+        {
+          title: '纬度',
+          dataIndex: 'latitude',
+          width: '8%',
         },
         {
             title: '载波频率(GHz)',
