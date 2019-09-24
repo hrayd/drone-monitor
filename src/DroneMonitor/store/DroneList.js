@@ -79,7 +79,7 @@ class DroneList {
             return {
                 ...l,
                 longitude,
-                latitude, 
+                latitude,
                 location: [longitude, latitude],
             }
         })
@@ -88,34 +88,34 @@ class DroneList {
     moveRight = () => {
         this.list = this.list.map(l => ({
             ...l,
-            longitude: l.longitude + 0.002,
+            longitude: (parseFloat(l.longitude) + 0.002).toFixed(3),
             // latitude,
-            location: [l.longitude + 0.002, l.latitude],
+            location: [(parseFloat(l.longitude) + 0.002).toFixed(3), l.latitude],
         }));
     };
 
     moveLeft = () => {
         this.list = this.list.map(l => ({
             ...l,
-            longitude: l.longitude - 0.002,
+            longitude: (parseFloat(l.longitude) - 0.002).toFixed(3),
             // latitude,
-            location: [l.longitude - 0.002, l.latitude],
+            location: [(parseFloat(l.longitude) - 0.002).toFixed(3), l.latitude],
         }));
     };
 
     moveUp = () => {
         this.list = this.list.map(l => ({
             ...l,
-            latitude: l.latitude + 0.002,
-            location: [l.longitude, l.latitude + 0.002],
+            latitude: (parseFloat(l.latitude) + 0.002).toFixed(3),
+            location: [l.longitude, (parseFloat(l.latitude) + 0.002).toFixed(3)],
         }));
     };
 
     moveDown = () => {
         this.list = this.list.map(l => ({
             ...l,
-            latitude: l.latitude - 0.002,
-            location: [l.longitude, l.latitude - 0.002],
+            latitude: (parseFloat(l.latitude) - 0.002).toFixed(3),
+            location: [l.longitude, (parseFloat(l.latitude) - 0.002).toFixed(3)],
         }));
     };
 }
