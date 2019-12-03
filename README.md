@@ -1,9 +1,9 @@
 ## 简介
 无人机监控系统
 
-![截图2](https://app.yinxiang.com/shard/s27/res/9e63358b-29a0-4835-bb2b-28ad1116e74e/shot2.png)
+![截图2](https://sm.ms/image/VxywNrisobOKhtQ)
 
-![截图1](https://app.yinxiang.com/shard/s27/res/4756671f-4456-4233-b4a2-0c9ba1fc3036/shot1.png)
+![截图1](https://sm.ms/image/VTCnUp3bB56Oqmz)
 
 - build：react + mobx
 - UI：ant-design
