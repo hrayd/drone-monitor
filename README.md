@@ -1,6 +1,10 @@
 ## 简介
 无人机监控系统
 
+![截图2](./libs/shot2.png)
+
+![截图1](./libs/shot1.png)
+
 - build：react + mobx
 - UI：ant-design
 - map api: ArcGIS API for Javascript
