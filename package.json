@@ -1,6 +1,6 @@
 {
   "name": "ys-drone-monitor",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@esri/react-arcgis": "^4.0.0",
