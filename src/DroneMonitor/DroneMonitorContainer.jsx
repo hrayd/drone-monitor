@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Map, loadModules } from "@esri/react-arcgis";
 import { loadCss } from "esri-loader";
 import { observer } from "mobx-react";
@@ -17,6 +17,8 @@ import { cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions } from "../config";
 
 loadCss(cssUrl);
 
+const OPTIONS = getOptions();
+
 const DroneMonitorContainer = observer(() => {
   const [basemap, setBasemap] = useState(null);
   const [radium, setRadium] = useState(0);
@@ -29,10 +31,7 @@ const DroneMonitorContainer = observer(() => {
   // 暂时只有一个监测站
   const monitor = monitors.list[0];
 
-  const OPTIONS = getOptions();
-
-  const loadBasemap = (callback) => {
-    console.log(getOptions());
+  const loadBasemap = useCallback((callback) => {
     loadModules(["esri/Basemap", "esri/layers/WebTileLayer"], OPTIONS).then(
       ([Basemap, WebTileLayer]) => {
         const basemap = new Basemap({
@@ -47,7 +46,7 @@ const DroneMonitorContainer = observer(() => {
         }
       }
     );
-  };
+  }, []);
 
   const openSocket = () => {
     if (ws.current) {
@@ -154,14 +153,14 @@ const DroneMonitorContainer = observer(() => {
       setRadium(newRadium);
     }, 150);
     return () => clearInterval(interval);
-  }, [radium]);
+  }, [radium, maxRadium]);
 
   useEffect(() => {
     loadBasemap((bm) => setBasemap(bm));
     // openSocket();
     addKeyboardListener();
     return closeSocket;
-  }, []);
+  }, [loadBasemap]);
 
   return (
     <div className="container">
