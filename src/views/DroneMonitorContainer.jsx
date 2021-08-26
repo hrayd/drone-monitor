@@ -14,6 +14,7 @@ import "./DroneMonitor.css";
 import { cssUrl, getOptions } from "../utils/utils";
 import loadBasemap from "../utils/loadBasemap";
 import useSocket from "../utils/useSocket";
+import addKeyboardListener from "../utils/addKeyboardListener";
 
 // ArcGIS资源加载
 loadCss(cssUrl);
@@ -30,50 +31,6 @@ const DroneMonitorContainer = observer(() => {
   // 暂时只有一个监测站
   // TODO: 多监测站支持, 需等待监测站通信API文档
   const monitor = monitors.list[0];
-
-  const addKeyboardListener = () => {
-    document.addEventListener(
-      "keyup",
-      (event) => {
-        const keyName = event.key;
-        switch (keyName) {
-          case "i": {
-            console.log("上");
-            drones.moveUp();
-            break;
-          }
-          case "k": {
-            console.log("下");
-            drones.moveDown();
-            break;
-          }
-          case "j": {
-            console.log("左");
-            drones.moveLeft();
-            break;
-          }
-          case "l": {
-            console.log("右");
-            drones.moveRight();
-            break;
-          }
-          case ",": {
-            console.log(",");
-            drones.clear();
-            break;
-          }
-          case ".": {
-            console.log(".");
-            drones.add();
-            break;
-          }
-          default:
-            break;
-        }
-      },
-      false
-    );
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
