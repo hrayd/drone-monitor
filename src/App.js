@@ -1,6 +1,5 @@
-import React from 'react';
-import DroneMonitorContainer from './DroneMonitor';
-import './App.css';
+import React from "react";
+import DroneMonitorContainer from "./DroneMonitor";
 
 function App() {
   return (

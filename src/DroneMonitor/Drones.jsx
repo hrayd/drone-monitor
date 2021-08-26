@@ -1,7 +1,7 @@
 import { loadModules } from "@esri/react-arcgis";
 import { observer, useDisposable } from "mobx-react-lite";
 import { reaction } from "mobx";
-import planeWarning from "./img/planeWarning.png";
+import planeWarning from "../assets/imgs/planeWarning.png";
 
 const Drones = observer(({ view, drones, center, loaderOptions }) => {
   useDisposable(() =>

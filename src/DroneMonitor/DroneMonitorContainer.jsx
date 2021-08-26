@@ -11,7 +11,7 @@ import InfoPanel from "./InfoPanel";
 import drones from "./store/DroneList";
 import monitors from "./store/MonitorStore";
 
-import "./style/DroneMonitor.css";
+import "./DroneMonitor.css";
 
 import { cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions } from "../config";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { loadModules } from "@esri/react-arcgis";
-import station from "./img/station.png";
+import station from "../assets/imgs/station.png";
 
 const Monitor = ({ center, view, radium, monitor }) => {
   const [graphics, setGraphics] = useState([]);
