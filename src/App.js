@@ -1,5 +1,5 @@
 import React from "react";
-import DroneMonitorContainer from "./DroneMonitor";
+import DroneMonitorContainer from "./views";
 
 function App() {
   return (

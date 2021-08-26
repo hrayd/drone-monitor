@@ -8,8 +8,8 @@ import Monitor from "./Monitor";
 import Drones from "./Drones";
 import InfoPanel from "./InfoPanel";
 
-import drones from "./store/DroneList";
-import monitors from "./store/MonitorStore";
+import drones from "../stores/DroneList";
+import monitors from "../stores/MonitorStore";
 
 import "./DroneMonitor.css";
 
