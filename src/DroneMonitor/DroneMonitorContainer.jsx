@@ -13,7 +13,7 @@ import monitors from "./store/MonitorStore";
 
 import "./DroneMonitor.css";
 
-import { cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions } from "../config";
+import { cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions } from "../utils/utils";
 
 loadCss(cssUrl);
 
