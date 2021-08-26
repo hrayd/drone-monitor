@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Map } from "@esri/react-arcgis";
 import { loadCss } from "esri-loader";
 import { observer } from "mobx-react";
-import { Button, Icon, message } from "antd";
+import { Button, Icon } from "antd";
 
 import Monitor from "./Monitor";
 import Drones from "./Drones";
@@ -11,8 +11,9 @@ import drones from "../stores/DroneList";
 import monitors from "../stores/MonitorStore";
 
 import "./DroneMonitor.css";
-import { cssUrl, WEBSOCKET_URL, getOptions } from "../utils/utils";
+import { cssUrl, getOptions } from "../utils/utils";
 import loadBasemap from "../utils/loadBasemap";
+import useSocket from "../utils/useSocket";
 
 // ArcGIS资源加载
 loadCss(cssUrl);
@@ -23,68 +24,12 @@ const DroneMonitorContainer = observer(() => {
   const [radium, setRadium] = useState(0); // 监测圆形视图半径
   const [maxRadium, setMaxRadium] = useState(3000); // 最大监测半径
   const [panelVisible, setPanelVisible] = useState(false); // 数据面板可见性
-  const [socketIsConnected, setSocketStatus] = useState(false); // 控制器Socket连接状态
-  const ws = useRef(); // 控制器Socket
+
+  const { socketIsConnected, openSocket, closeSocket } = useSocket(); // 控制器Socket相关方法
 
   // 暂时只有一个监测站
   // TODO: 多监测站支持, 需等待监测站通信API文档
   const monitor = monitors.list[0];
-
-  // 开启控制器Socket
-  const openSocket = () => {
-    if (ws.current) {
-      return;
-    }
-    ws.current = new WebSocket(WEBSOCKET_URL);
-    ws.current.onmessage = (e) => {
-      console.log("Receive: ", e.data);
-      switch (e.data) {
-        case "up":
-          drones.moveUp();
-          break;
-        case "down":
-          drones.moveDown();
-          break;
-        case "left":
-          drones.moveLeft();
-          break;
-        case "right":
-          drones.moveRight();
-          break;
-        case "add":
-          drones.add();
-          break;
-        case "clear":
-          drones.clear();
-          break;
-        default:
-          break;
-      }
-    };
-    ws.current.onclose = () => {
-      console.log("Websocket Closed");
-      ws.current = null;
-      setSocketStatus(false);
-    };
-    ws.current.onerror = () => {
-      console.log("Websocket Error");
-      ws.current = null;
-      setSocketStatus(false);
-    };
-    ws.current.onopen = () => {
-      console.log("Websocket Opened");
-      message.success("连接成功");
-      setSocketStatus(true);
-    };
-  };
-
-  const closeSocket = () => {
-    if (ws.current && ws.current.close) {
-      ws.current.close();
-      setSocketStatus(false);
-      ws.current = null;
-    }
-  };
 
   const addKeyboardListener = () => {
     document.addEventListener(
@@ -143,7 +88,7 @@ const DroneMonitorContainer = observer(() => {
     // openSocket();
     addKeyboardListener();
     return closeSocket;
-  }, []);
+  }, [closeSocket]);
 
   return (
     <div className="container">
