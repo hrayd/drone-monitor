@@ -1,9 +1,12 @@
+/**
+ * 无人机View
+ */
 import { loadModules } from "@esri/react-arcgis";
 import { observer, useDisposable } from "mobx-react-lite";
 import { reaction } from "mobx";
 import planeWarning from "../assets/imgs/planeWarning.png";
 
-const Drones = observer(({ view, drones, center, loaderOptions }) => {
+const Drones = observer(({ view, drones, center }) => {
   useDisposable(() =>
     reaction(
       () => drones.list,
@@ -24,6 +27,7 @@ const Drones = observer(({ view, drones, center, loaderOptions }) => {
                 height: "40px",
               };
 
+              // 无人机信息面板
               return new Graphic({
                 id: `drone${index}`,
                 geometry: point,
@@ -66,6 +70,7 @@ const Drones = observer(({ view, drones, center, loaderOptions }) => {
               });
             });
 
+            // 无人机方向与距离标识
             const lines = list.map((drone, index) => {
               const polyline = {
                 type: "polyline", // autocasts as new Polyline()
@@ -86,6 +91,7 @@ const Drones = observer(({ view, drones, center, loaderOptions }) => {
               });
             });
 
+            // 重渲染前清理所有视图
             view.graphics.removeMany(
               view.graphics.filter(
                 (g) =>

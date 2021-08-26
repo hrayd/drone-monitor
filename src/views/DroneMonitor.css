@@ -44,6 +44,18 @@
   top: 0;
 }
 
+.panel-button {
+  position: fixed;
+  bottom: 0;
+  zindex: 5;
+  marginbottom: 1.5rem;
+  marginleft: 1.5rem;
+  fontsize: 1.5rem;
+  boxshadow: 0 2px 30px 8px rgba(0; 0; 0; 0.48);
+  width: 3rem;
+  height: 3rem;
+}
+
 @keyframes map-border {
   from {
     border-width: 8px;

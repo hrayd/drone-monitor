@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Map } from "@esri/react-arcgis";
 import { loadCss } from "esri-loader";
 import { observer } from "mobx-react";
@@ -32,6 +32,7 @@ const DroneMonitorContainer = observer(() => {
   // TODO: 多监测站支持, 需等待监测站通信API文档
   const monitor = monitors.list[0];
 
+  // 监测圆环动画
   useEffect(() => {
     const interval = setInterval(() => {
       const newRadium = radium < maxRadium ? radium + 300 : 0;
@@ -40,12 +41,62 @@ const DroneMonitorContainer = observer(() => {
     return () => clearInterval(interval);
   }, [radium, maxRadium]);
 
+  // 页面载入与卸载
   useEffect(() => {
     loadBasemap((bm) => setBasemap(bm));
-    // openSocket();
+    // openSocket();  // socket改为按键手动连接
     addKeyboardListener();
     return closeSocket;
   }, [closeSocket]);
+
+  /**
+   * 地图View
+   * 若basemap未加载会导致页面错误, 故先返回null
+   */
+  const mapView = useMemo(
+    () =>
+      basemap ? (
+        <Map
+          mapProperties={{ basemap }}
+          viewProperties={{
+            center: monitor.location,
+            zoom: 12,
+          }}
+        >
+          <Monitor
+            center={monitor.location}
+            radium={radium}
+            monitor={monitor}
+            loaderOptions={OPTIONS}
+          />
+          <Drones
+            drones={drones}
+            center={monitor.location}
+            radium={radium}
+            loaderOptions={OPTIONS}
+          />
+        </Map>
+      ) : null,
+    [basemap, monitor, radium]
+  );
+
+  /**
+   * 报警View
+   * 当有无人机临空时页面边框出现红色动画
+   * TODO: 语音报警
+   */
+  const alarmView = useMemo(
+    () => (
+      <div
+        className={
+          drones.list.length
+            ? "shadow-container-alarm"
+            : "shadow-container-no-alarm"
+        }
+      />
+    ),
+    []
+  );
 
   return (
     <div className="container">
@@ -54,52 +105,13 @@ const DroneMonitorContainer = observer(() => {
         title="展开控制面板"
         onClick={() => setPanelVisible(true)}
         shape="circle"
-        style={{
-          display: panelVisible ? "none" : "",
-          position: "fixed",
-          bottom: 0,
-          zIndex: 5,
-          marginBottom: "1.5rem",
-          marginLeft: "1.5rem",
-          fontSize: "1.5rem",
-          boxShadow: "0 2px 30px 8px rgba(0, 0, 0, .48)",
-          width: "3rem",
-          height: "3rem",
-        }}
+        className="panel-button"
+        style={{ display: panelVisible ? "none" : "" }}
       >
         <Icon type="up" />
       </Button>
-      <div className="map-container">
-        {basemap ? (
-          <Map
-            mapProperties={{ basemap }}
-            viewProperties={{
-              center: monitor.location,
-              zoom: 12,
-            }}
-          >
-            <Monitor
-              center={monitor.location}
-              radium={radium}
-              monitor={monitor}
-              loaderOptions={OPTIONS}
-            />
-            <Drones
-              drones={drones}
-              center={monitor.location}
-              radium={radium}
-              loaderOptions={OPTIONS}
-            />
-          </Map>
-        ) : null}
-      </div>
-      <div
-        className={
-          drones.list.length
-            ? "shadow-container-alarm"
-            : "shadow-container-no-alarm"
-        }
-      />
+      <div className="map-container">{mapView}</div>
+      {alarmView}
       <InfoPanel
         center={monitor.location}
         monitor={monitor}
