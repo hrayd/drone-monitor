@@ -1,8 +1,9 @@
+// 监测站View
 import { useState, useEffect } from "react";
 import { loadModules } from "@esri/react-arcgis";
 import station from "../assets/imgs/station.png";
 
-const Monitor = ({ center, view, radium, monitor }) => {
+const Station = ({ center, view, radium, monitor }) => {
   const [graphics, setGraphics] = useState([]);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const Monitor = ({ center, view, radium, monitor }) => {
           height: "40px",
         };
 
+        // 监测站信息面板
         const pointGraphic = new Graphic({
           id: "centerPoint",
           geometry: point,
@@ -103,8 +105,8 @@ const Monitor = ({ center, view, radium, monitor }) => {
       view.graphics.removeMany(graphics);
     };
     /* eslint-disable */
-  }, [radium, center]);
+  }, [radium, center]); // 写入graphic、view相关依赖项会导致无限重渲染
   return null;
 };
 
-export default Monitor;
+export default Station;

@@ -4,13 +4,13 @@ import { loadCss } from "esri-loader";
 import { observer } from "mobx-react";
 import { Button, Icon } from "antd";
 
-import Monitor from "./Monitor";
+import Monitor from "./Station";
 import Drones from "./Drones";
 import InfoPanel from "./InfoPanel";
 import drones from "../stores/DroneList";
 import monitors from "../stores/MonitorStore";
 
-import "./DroneMonitor.css";
+import "./styles.css";
 import { cssUrl, getOptions } from "../utils/utils";
 import loadBasemap from "../utils/loadBasemap";
 import useSocket from "../utils/useSocket";
