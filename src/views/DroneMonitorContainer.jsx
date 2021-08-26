@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Map, loadModules } from "@esri/react-arcgis";
+import React, { useState, useEffect, useRef } from "react";
+import { Map } from "@esri/react-arcgis";
 import { loadCss } from "esri-loader";
 import { observer } from "mobx-react";
 import { Button, Icon, message } from "antd";
@@ -7,47 +7,30 @@ import { Button, Icon, message } from "antd";
 import Monitor from "./Monitor";
 import Drones from "./Drones";
 import InfoPanel from "./InfoPanel";
-
 import drones from "../stores/DroneList";
 import monitors from "../stores/MonitorStore";
 
 import "./DroneMonitor.css";
+import { cssUrl, WEBSOCKET_URL, getOptions } from "../utils/utils";
+import loadBasemap from "../utils/loadBasemap";
 
-import { cssUrl, BASEMAP_URL, WEBSOCKET_URL, getOptions } from "../utils/utils";
-
+// ArcGIS资源加载
 loadCss(cssUrl);
-
 const OPTIONS = getOptions();
 
 const DroneMonitorContainer = observer(() => {
-  const [basemap, setBasemap] = useState(null);
-  const [radium, setRadium] = useState(0);
-  const [maxRadium, setMaxRadium] = useState(3000);
-  const [panelVisible, setPanelVisible] = useState(false);
-
-  const [socketIsConnected, setSocketStatus] = useState(false);
-  const ws = useRef();
+  const [basemap, setBasemap] = useState(null); // 地图对象
+  const [radium, setRadium] = useState(0); // 监测圆形视图半径
+  const [maxRadium, setMaxRadium] = useState(3000); // 最大监测半径
+  const [panelVisible, setPanelVisible] = useState(false); // 数据面板可见性
+  const [socketIsConnected, setSocketStatus] = useState(false); // 控制器Socket连接状态
+  const ws = useRef(); // 控制器Socket
 
   // 暂时只有一个监测站
+  // TODO: 多监测站支持, 需等待监测站通信API文档
   const monitor = monitors.list[0];
 
-  const loadBasemap = useCallback((callback) => {
-    loadModules(["esri/Basemap", "esri/layers/WebTileLayer"], OPTIONS).then(
-      ([Basemap, WebTileLayer]) => {
-        const basemap = new Basemap({
-          baseLayers: [
-            new WebTileLayer({
-              urlTemplate: BASEMAP_URL,
-            }),
-          ],
-        });
-        if (typeof callback === "function") {
-          callback(basemap);
-        }
-      }
-    );
-  }, []);
-
+  // 开启控制器Socket
   const openSocket = () => {
     if (ws.current) {
       return;
@@ -160,7 +143,7 @@ const DroneMonitorContainer = observer(() => {
     // openSocket();
     addKeyboardListener();
     return closeSocket;
-  }, [loadBasemap]);
+  }, []);
 
   return (
     <div className="container">
